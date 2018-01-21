@@ -1,0 +1,49 @@
+AWS :
+
+- Pour créer une VM, voir le tutorial sur la création d'instance (module EC2)
+
+Il y aura une clé privé à récupérer. Il faut ensuite utiliser puttyGen pour générer une clé privé au format putty.
+
+groupe de sécurité : gestion des ports. Par exemple, l'installation
+de Jenkins, nécéssitait l'ouvrir le port 8080 (voir groupes de sécurité)
+
+Installation de Jenkins : chercher sur google AWS Jenkins et suivre le tutorial sur le site officiel AWS
+Attention : l'installation de jenkins nécéssitait JAVA 8 alors que le 7 etait installé.
+voir https://gradot.wordpress.com/2015/10/19/update-alternatives/
+
+Il fallait taper la commande suivante : 
+sudo update-alternatives --config java
+
+Terraform : voir fichier tf, 
+puis doc officielle TF : https://www.terraform.io/intro/getting-started/install.html
+et pour AWS spécifiquement : https://www.terraform.io/docs/providers/aws/
+
+--------------------------------------------------------
+
+Installation d'Ansible :
+sudo yum install wget
+sudo wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+sudo rpm -ivh epel-release-latest-7.noarch.rpm
+sudo yum install ansible
+
+Suivre https://www.linuxtricks.fr/wiki/ansible-automatiser-la-gestion-de-serveurs :
+Attention, si on veut tester avec une seule machine, il faut générer une clé SSH. Pour copier notre clé sur notre serveur localhost où est installé ansible :
+
+ssh-keygen -t rsa
+Press enter for each line 
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod og-wx ~/.ssh/authorized_keys 
+
+dans le script ansible : bien penser au "become: true" pour élever les privilèges, puis par défaut, c'est sudo
+
+Une bonne structure ansible se trouve dans le dossier "ansible" : executer " ansible-playbook -i inventories/recette test.yml"
+handler : permet d'executer une tache apres une autre par exemple
+task : action
+template : fichier ou on aura des valeurs de variable a injecter
+role : ensemble cohérent de tasks : install nginx / copie d'un fichier html / restard du serveur nginx par exemple
+
+Dans notre exemple : on installe un ensemble de tasks qui sont dans le fichier "test.yml" a la racine du dossier "ansible"
+ET un role, qui lui contient un ensemble de tasks. Ce role installe Nginx, déplacer un template avec une variable associée (un fichier html bidon qui affiche
+la valeur de la variable pour l'environnement de recette par exemple) et qui déclenche un "handler" pour rédémarrer le serveur NGINX. Ensuite on peut consulter la page test/html depuis
+le serveur
+

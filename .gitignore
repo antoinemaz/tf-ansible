@@ -1,0 +1,11 @@
+# Compiled files
+*.tfstate
+*.tfstate.backup
+
+# Module directory
+.terraform/
+
+terraform_0.11.2_windows_amd64.zip
+ansible_key.pem
+ansible_key.ppk
+terraform.exe
